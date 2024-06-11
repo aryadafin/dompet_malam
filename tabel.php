@@ -1,88 +1,3 @@
-<<<<<<< HEAD
-<?php
-// Koneksi ke MySQL
-$server = "127.0.0.1";
-$username = "root";
-$password = "";
-$database = "dompet_malam";
-
-$koneksi = new mysqli($server, $username, $password, $database);
-
-// Cek koneksi
-if ($koneksi->connect_error) {
-    die("Koneksi gagal: " . $koneksi->connect_error);
-}
-?>
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daftar Transaksi</title>
-    <?php include('_head.php'); ?>
-</head>
-<body>
-    <div class="container">
-        <div class="row justify-content-md-center">
-            <div class="col col-lg-7">
-                <div class="box">
-                    <h3>Daftar Transaksi</h3>
-                    <div class="btn-group noPrint" role="group" aria-label="Basic example">
-                        <a href="add.php" class="btn btn-primary mb-2"><i class="fa-solid fa-plus"></i> Tambah Transaksi</a>
-                        <a onclick="window.print()" class="btn btn-secondary mb-2"><i class="fa-solid fa-print"></i> Cetak</a>
-                    </div>
-                    <table class="table table-striped-columns mt-1">
-                        <tr>
-                            <th>NO</th>
-                            <th>TANGGAL</th>
-                            <th>KATEGORI</th>
-                            <th>NOMINAL</th>
-                            <th>TANGGAL INPUT</th>
-                            <th>LAMPIRAN</th>
-                            <th class="noPrint">AKSI</th>
-                        </tr>
-                        <?php
-                        $no = 1;
-                        $sql = "SELECT * FROM transaksi";
-                        $data = $koneksi->query($sql);
-
-                        // Cek jumlah data
-                        if ($data->num_rows == 0) {
-                            echo "<tr><td colspan='7' align='center'>Tidak ada data.</td></tr>";
-                        } else {
-                            // Menampilkan data
-                            foreach ($data as $row) {
-                                echo "<tr>";
-                                echo "<td>".$no++."</td>";
-                                echo "<td>".$row['tanggal']."</td>";
-                                echo "<td>".$row['kategori']."</td>";
-                                echo "<td>".$row['nominal']."</td>";
-                                echo "<td>".$row['tanggal_input']."</td>";
-                                echo "<td>";
-                                if (!empty($row['lampiran'])) {
-                                    echo "<a href='".$row['lampiran']."' target='_blank'>Lihat Lampiran</a>";
-                                } else {
-                                    echo "Tidak ada lampiran";
-                                }
-                                echo "</td>";
-                                $confirm = "onclick='return confirm(\"Apakah anda yakin ingin menghapus data ini?\")'";
-                                echo "<td class='noPrint'>
-                                    <a href='edit.php?id=".$row['id']."' class='btn btn-warning'><i class='fa-regular fa-pen-to-square'></i></a>
-                                    <a href='aksi_delete.php?id=".$row['id']."' ".$confirm." class='btn btn-danger'><i class='fa-solid fa-trash'></i></a></td>";
-                                echo "</tr>";
-                            }
-                        }
-                        ?>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-    <br/><br/><br/>
-</body>
-</html>
-=======
 <?php
 // Koneksi ke MySQL
 $server = "127.0.0.1";
@@ -129,34 +44,56 @@ if ($koneksi->connect_error) {
             .noPrint {
                 display: block;
             }
+            .printHide {
+                display: none;
+            }
         }
+        .dompet-title {
+    color: #007bff; 
+    border: 2px solid #000000; 
+    border-radius: 12px; 
+    padding: 5px 10px; 
+    display: inline-block; 
+}
+.wallet-icon {
+            margin-right: 10px; /* Jarak ikon dengan teks */
+        }
+
     </style>
 </head>
 <body>
     <div class="container">
         <div class="box">
+        <h2>Dompet Malam</h2> <h2 class="dompet-title"><i class="fas fa-wallet wallet-icon"></i>Arya Dafin</h2>
+    </br>
             <h3>Daftar Transaksi</h3>
-            <div class="btn-group mb-3" role="group" aria-label="Basic example">
-                <a href="add.php" class="btn btn-primary"><i class="fas fa-plus"></i> Tambah Transaksi</a>
-                <a onclick="window.print()" class="btn btn-secondary"><i class="fas fa-print"></i> Cetak</a>
+            <div class="btn-group mb-3 printHide" role="group" aria-label="Basic example">
+                <a href="add.php" class="btn btn-primary printHide "><i class="fas fa-plus"></i> Tambah Transaksi</a>
+                <a onclick="window.print()" class="btn btn-secondary printHide"><i class="fas fa-print"></i> Cetak</a>
             </div>
             <div class="table-responsive">
                 <table class="table table-striped table-bordered">
                     <thead class="thead-dark">
-                        <tr>
+                        <tr class=>
                             <th>NO</th>
                             <th>TANGGAL</th>
                             <th>KATEGORI</th>
                             <th>NOMINAL</th>
                             <th>TANGGAL INPUT</th>
-                            <th>LAMPIRAN</th>
-                            <th>ACTION</th>
+                            <th class="printHide">LAMPIRAN</th>
+                            <th class="printHide">ACTION</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php
                         $no = 1;
-                        $sql = "SELECT * FROM transaksi";
+                        $sql = "SELECT *, 
+                                       CASE 
+                                           WHEN kategori = 'Pemasukan Gaji' THEN 'Pemasukan Gaji'
+                                           WHEN kategori = 'Pengeluaran Rutin' THEN 'Pengeluaran Rutin'
+                                           ELSE kategori 
+                                       END AS kategori_lengkap 
+                                FROM transaksi";
                         $data = $koneksi->query($sql);
 
                         // Cek jumlah data
@@ -168,19 +105,19 @@ if ($koneksi->connect_error) {
                                 echo "<tr>";
                                 echo "<td>".$no++."</td>";
                                 echo "<td>".$row['tanggal']."</td>";
-                                echo "<td>".$row['kategori']."</td>";
-                                echo "<td>".$row['nominal']."</td>";
+                                echo "<td>".$row['kategori_lengkap']."</td>";
+                                echo "<td>Rp. ".number_format($row['nominal'], 0, ',', '.')."</td>"; // Memformat nominal menjadi Rupiah
                                 echo "<td>".$row['tanggal_input']."</td>";
-                                echo "<td>";
+                                echo "<td ' class='printHide'>";
                                 if (!empty($row['lampiran'])) {
-                                    echo "<a href='".$row['lampiran']."' target='_blank'>Lihat Lampiran</a>";
+                                    echo "<a href='".$row['lampiran']."' target='_blank' ' class='printHide'>Lihat Lampiran</a>";
                                 } else {
                                     echo "Tidak ada lampiran";
                                 }
                                 echo "</td>";
-                                echo "<td>";
-                                echo "<a href='edit.php?id=".$row['id']."' class='btn btn-warning btn-sm mr-1'><i class='fas fa-pencil-alt'></i> Edit</a>";
-                                echo "<a href='aksi_delete.php?id=".$row['id']."' onclick='return confirm(\"Apakah anda yakin ingin menghapus data ini?\")' class='btn btn-danger btn-sm'><i class='fas fa-trash'></i> Delete</a>";
+                                echo "<td ' class='printHide'>";
+                                echo "<a href='edit.php?id=".$row['id']."' class='btn btn-warning btn-sm mr-1 printHide'><i class='fas fa-pencil-alt '></i> Edit</a>";
+                                echo "<a href='aksi_delete.php?id=".$row['id']."' onclick='return confirm(\"Apakah anda yakin ingin menghapus data ini?\")' class='btn btn-danger btn-sm printHide'><i class='fas fa-trash'></i> Delete</a>";
                                 echo "</td>";
                                 echo "</tr>";
                             }
@@ -200,4 +137,3 @@ if ($koneksi->connect_error) {
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
->>>>>>> 34b8d994148da17d0da846869fa10589a16e277f
