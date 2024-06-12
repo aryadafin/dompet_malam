@@ -49,23 +49,22 @@ if ($koneksi->connect_error) {
             }
         }
         .dompet-title {
-    color: #007bff; 
-    border: 2px solid #000000; 
-    border-radius: 12px; 
-    padding: 5px 10px; 
-    display: inline-block; 
-}
-.wallet-icon {
-            margin-right: 10px; /* Jarak ikon dengan teks */
+            color: #007bff; 
+            border: 2px solid #000000; 
+            border-radius: 12px; 
+            padding: 5px 10px; 
+            display: inline-block; 
         }
-
+        .wallet-icon {
+            margin-right: 10px; 
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="box">
-        <h2>Dompet Malam</h2> <h2 class="dompet-title"><i class="fas fa-wallet wallet-icon"></i>Arya Dafin</h2>
-    </br>
+            <h2>Dompet Malam</h2> <h2 class="dompet-title"><i class="fas fa-wallet wallet-icon"></i>Arya Dafin</h2>
+            <br/>
             <h3>Daftar Transaksi</h3>
             <div class="btn-group mb-3 printHide" role="group" aria-label="Basic example">
                 <a href="add.php" class="btn btn-primary printHide "><i class="fas fa-plus"></i> Tambah Transaksi</a>
@@ -74,11 +73,12 @@ if ($koneksi->connect_error) {
             <div class="table-responsive">
                 <table class="table table-striped table-bordered">
                     <thead class="thead-dark">
-                        <tr class=>
+                        <tr>
                             <th>NO</th>
                             <th>TANGGAL</th>
                             <th>KATEGORI</th>
                             <th>NOMINAL</th>
+                            <th>KETERANGAN</th> 
                             <th>TANGGAL INPUT</th>
                             <th class="printHide">LAMPIRAN</th>
                             <th class="printHide">ACTION</th>
@@ -98,7 +98,7 @@ if ($koneksi->connect_error) {
 
                         // Cek jumlah data
                         if ($data->num_rows == 0) {
-                            echo "<tr><td colspan='7' class='text-center'>Tidak ada data.</td></tr>";
+                            echo "<tr><td colspan='8' class='text-center'>Tidak ada data.</td></tr>";
                         } else {
                             // Menampilkan data
                             while ($row = $data->fetch_assoc()) {
@@ -106,16 +106,17 @@ if ($koneksi->connect_error) {
                                 echo "<td>".$no++."</td>";
                                 echo "<td>".$row['tanggal']."</td>";
                                 echo "<td>".$row['kategori_lengkap']."</td>";
-                                echo "<td>Rp. ".number_format($row['nominal'], 0, ',', '.')."</td>"; // Memformat nominal menjadi Rupiah
+                                echo "<td>Rp. ".number_format($row['nominal'], 0, ',', '.')."</td>"; 
+                                echo "<td>".$row['keterangan']."</td>"; 
                                 echo "<td>".$row['tanggal_input']."</td>";
-                                echo "<td ' class='printHide'>";
+                                echo "<td class='printHide'>";
                                 if (!empty($row['lampiran'])) {
-                                    echo "<a href='".$row['lampiran']."' target='_blank' ' class='printHide'>Lihat Lampiran</a>";
+                                    echo "<a href='".$row['lampiran']."' target='_blank' class='printHide'>Lihat Lampiran</a>";
                                 } else {
                                     echo "Tidak ada lampiran";
                                 }
                                 echo "</td>";
-                                echo "<td ' class='printHide'>";
+                                echo "<td class='printHide'>";
                                 echo "<a href='edit.php?id=".$row['id']."' class='btn btn-warning btn-sm mr-1 printHide'><i class='fas fa-pencil-alt '></i> Edit</a>";
                                 echo "<a href='aksi_delete.php?id=".$row['id']."' onclick='return confirm(\"Apakah anda yakin ingin menghapus data ini?\")' class='btn btn-danger btn-sm printHide'><i class='fas fa-trash'></i> Delete</a>";
                                 echo "</td>";
